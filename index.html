@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Devesh</title>
+<style>
+
+@font-face {
+  font-family: 'Adwaita Mono';
+  src: url('https://gitlab.gnome.org/GNOME/adwaita-fonts/-/raw/main/src/AdwaitaMono-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Adwaita Mono';
+  src: url('https://gitlab.gnome.org/GNOME/adwaita-fonts/-/raw/main/src/AdwaitaMono-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Adwaita Mono';
+  src: url('https://gitlab.gnome.org/GNOME/adwaita-fonts/-/raw/main/src/AdwaitaMono-Italic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+}
+
+:root {
+  --bg:   #0e0e0e;
+  --card: #111111;
+  --ink:  #f0f0f0;
+  --dim:  #888888;
+  --rule: #2a2a2a;
+  --red:  #c0392b;
+  --red2: #e74c3c;
+  --w:    270px;
+  --mono: 'Adwaita Mono', 'Source Code Pro', 'Fira Mono', ui-monospace, monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 17px; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--mono);
+  min-height: 100vh;
+}
+
+/* ── LAYOUT ── */
+.layout { display: flex; min-height: 100vh; }
+
+/* ── CARD ── */
+.card {
+  width: var(--w);
+  min-width: var(--w);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  border-right: 1px solid var(--rule);
+  background: var(--card);
+  padding: 2.2rem 1.6rem 2rem;
+  display: flex;
+  flex-direction: column;
+}
+.card::-webkit-scrollbar { display: none; }
+
+/* pfp + name inline */
+.card-top {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin-bottom: 1.6rem;
+}
+
+.pfp {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--red);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 1.5px solid #2a2a2a;
+}
+.pfp img { width: 100%; height: 100%; object-fit: cover; }
+.pfp-initial {
+  font-family: var(--mono);
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #fff;
+  user-select: none;
+  line-height: 1;
+}
+
+.card-name {
+  font-family: var(--mono);
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+  line-height: 1;
+}
+
+/* bio */
+.card-bio {
+  font-family: var(--mono);
+  font-size: 0.76rem;
+  line-height: 1.7;
+  color: #aaa;
+  margin-bottom: 1.5rem;
+}
+.card-bio em { color: var(--red2); font-style: italic; }
+
+.card-rule { height: 1px; background: var(--rule); margin-bottom: 1.3rem; }
+
+.card-label {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin-bottom: 0.7rem;
+}
+
+.card-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-bottom: 0;
+}
+.card-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 0.76rem;
+  padding: 0.38rem 0;
+  transition: color 0.12s;
+  letter-spacing: 0.02em;
+}
+.card-link:hover { color: var(--red2); }
+.card-link svg {
+  width: 11px; height: 11px;
+  fill: currentColor;
+  flex-shrink: 0;
+  opacity: 0.6;
+}
+
+.card-rule-mid {
+  height: 1px;
+  background: var(--rule);
+  margin: 1.3rem 0;
+}
+
+.card-cats { display: flex; flex-direction: column; gap: 0; }
+
+.cat-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  padding: 0.32rem 0;
+  font-family: var(--mono);
+  font-size: 0.74rem;
+  color: var(--dim);
+  transition: color 0.12s;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  letter-spacing: 0.02em;
+}
+.cat-btn::before {
+  content: '';
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: var(--rule);
+  flex-shrink: 0;
+  transition: background 0.12s;
+  display: block;
+}
+.cat-btn:hover { color: var(--ink); }
+.cat-btn:hover::before { background: var(--dim); }
+.cat-btn.active { color: var(--ink); }
+.cat-btn.active::before { background: var(--red); }
+
+.card-spacer { flex: 1; }
+
+/* ── FEED ── */
+.feed {
+  flex: 1;
+  max-width: 660px;
+  padding: 4rem 3.5rem 6rem;
+}
+
+.feed-view { display: none; }
+.feed-view.active { display: block; }
+.article-view { display: none; }
+.article-view.active { display: block; }
+
+/* Posts */
+.post {
+  padding: 2.2rem 0;
+  border-bottom: 1px solid var(--rule);
+  cursor: pointer;
+}
+.post:first-child { padding-top: 0; }
+
+.post-meta {
+  font-family: var(--mono);
+  font-size: 0.63rem;
+  color: var(--dim);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 0.65rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.dot { width: 2px; height: 2px; border-radius: 50%; background: var(--dim); display: inline-block; }
+
+.post-title {
+  font-family: var(--mono);
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: 0.01em;
+  margin-bottom: 0.45rem;
+  color: var(--ink);
+  transition: color 0.1s;
+}
+.post:hover .post-title { color: var(--red2); }
+
+.post-subtitle {
+  font-family: var(--mono);
+  font-style: italic;
+  font-size: 0.82rem;
+  color: #888;
+  margin-bottom: 0.65rem;
+  line-height: 1.55;
+}
+
+.post-excerpt {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  line-height: 1.85;
+  color: #999;
+}
+
+.post-more {
+  display: inline-block;
+  margin-top: 0.5rem;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  color: var(--red);
+}
+
+.empty {
+  padding: 2rem 0;
+  font-family: var(--mono);
+  font-style: italic;
+  color: var(--dim);
+  font-size: 0.9rem;
+}
+
+/* Article view */
+.art-back {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  color: var(--dim);
+  padding: 0;
+  margin-bottom: 3rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: color 0.12s;
+}
+.art-back:hover { color: var(--red2); }
+
+.art-cat {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 0.75rem;
+}
+
+.art-title {
+  font-family: var(--mono);
+  font-size: 1.7rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  margin-bottom: 0.5rem;
+  color: var(--ink);
+}
+
+.art-date {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  color: var(--dim);
+  letter-spacing: 0.05em;
+  margin-bottom: 2.5rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+.art-body {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  line-height: 2;
+  color: #ccc;
+  white-space: pre-wrap;
+}
+
+/* ── MOBILE ── */
+@media (max-width: 700px) {
+  .layout { flex-direction: column; }
+  .card {
+    width: 100%; min-width: 0;
+    position: static; height: auto;
+    border-right: none; border-bottom: 1px solid var(--rule);
+    padding: 1.4rem 1.2rem;
+  }
+  .card-bio, .card-cats, .card-rule-mid { display: none; }
+  .card-links { flex-direction: row; flex-wrap: wrap; gap: 0.8rem 1.2rem; margin-bottom: 0; }
+  .card-link { padding: 0; }
+  .feed { padding: 2rem 1.2rem 4rem; max-width: 100%; }
+}
+
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <!-- CARD -->
+  <aside class="card">
+    <div class="card-top">
+      <div class="pfp"><img src="./pfp.png" alt="Devesh"></div>
+      <span class="card-name">Devesh</span>
+    </div>
+
+    <p class="card-bio">
+    </p>
+
+    <div class="card-rule"></div>
+
+    <div class="card-label">Links</div>
+    <nav class="card-links">
+      <a class="card-link" href="#" target="_blank">
+        <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        X / Twitter
+      </a>
+      <a class="card-link" href="#" target="_blank">
+        <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+        Instagram
+      </a>
+      <a class="card-link" href="#" target="_blank">
+        <svg viewBox="0 0 24 24"><path d="M22.539 8.242c0-4.56-3.692-8.242-8.242-8.242H9.703C5.153 0 1.461 3.682 1.461 8.242v.734c0 3.858 2.661 7.107 6.244 8.017l-1.02 5.95 7.137-5.95h.474c4.55 0 8.243-3.683 8.243-8.242v-.509z"/></svg>
+        Substack
+      </a>
+      <a class="card-link" href="#" target="_blank">
+        <svg viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+        GitHub
+      </a>
+    </nav>
+
+    <div class="card-rule-mid"></div>
+
+    <div class="card-cats">
+      <button class="cat-btn active" onclick="filterCat(this,'all')">All posts</button>
+      <button class="cat-btn" onclick="filterCat(this,'philosophical')">Philosophical</button>
+      <button class="cat-btn" onclick="filterCat(this,'political')">Political</button>
+    </div>
+
+    <div class="card-spacer"></div>
+  </aside>
+
+  <!-- FEED -->
+  <main class="feed">
+    <div id="list-view" class="feed-view active">
+      <div id="post-feed"></div>
+    </div>
+
+    <div id="article-view" class="article-view">
+      <button class="art-back" onclick="goBack()">← All posts</button>
+      <div id="a-cat" class="art-cat"></div>
+      <h1 id="a-title" class="art-title"></h1>
+      <div id="a-date" class="art-date"></div>
+      <div id="a-body" class="art-body"></div>
+    </div>
+  </main>
+</div>
+
+<script>
+// ── POSTS — edit this array to publish articles ──
+const POSTS = [
+  // {
+  //   id: 1,
+  //   title: "On Hegemony and Common Sense",
+  //   sub: "Reading Gramsci in 2024",
+  //   body: "Full article text here…",
+  //   cat: "philosophical",   // "philosophical" or "political"
+  //   date: "2024-06-01"
+  // },
+];
+
+let currentCat = 'all';
+
+function fmtDate(iso) {
+  return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function renderFeed() {
+  const feed = document.getElementById('post-feed');
+  const posts = currentCat === 'all' ? POSTS : POSTS.filter(p => p.cat === currentCat);
+  if (!posts.length) {
+    feed.innerHTML = `<p class="empty">No posts yet.</p>`;
+    return;
+  }
+  feed.innerHTML = posts.map(p => `
+    <article class="post" onclick="openPost(${p.id})">
+      <div class="post-meta">
+        <span>${fmtDate(p.date)}</span>
+        <span class="dot"></span>
+        <span>${p.cat.charAt(0).toUpperCase()+p.cat.slice(1)}</span>
+      </div>
+      <h2 class="post-title">${esc(p.title)}</h2>
+      ${p.sub ? `<p class="post-subtitle">${esc(p.sub)}</p>` : ''}
+      ${p.body ? `<p class="post-excerpt">${esc(p.body.slice(0,220))}${p.body.length>220?'…':''}</p>` : ''}
+      ${p.body && p.body.length > 220 ? `<span class="post-more">Read more →</span>` : ''}
+    </article>
+  `).join('');
+}
+
+function filterCat(btn, cat) {
+  currentCat = cat;
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  goBack();
+  renderFeed();
+}
+
+function openPost(id) {
+  const p = POSTS.find(x => x.id === id);
+  if (!p) return;
+  document.getElementById('a-cat').textContent = p.cat.toUpperCase();
+  document.getElementById('a-title').textContent = p.title;
+  document.getElementById('a-date').textContent = fmtDate(p.date);
+  document.getElementById('a-body').textContent = p.body || '';
+  document.getElementById('list-view').classList.remove('active');
+  document.getElementById('article-view').classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function goBack() {
+  document.getElementById('article-view').classList.remove('active');
+  document.getElementById('list-view').classList.add('active');
+}
+
+renderFeed();
+</script>
+</body>
+</html>
